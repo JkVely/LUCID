@@ -20,36 +20,91 @@
 
 \def\authorrefmark#1{\ensuremath{^{\textbf{#1}}}}
 
+% Redefinici\'on del entorno abstract para soporte biling\"ue (Resumen + Abstract)
+% Se elimina el encabezado ABSTRACT autom\'atico de la clase para insertar
+% los encabezados manualmente en el orden deseado.
+\def\abstract{%
+  \global\setbox\abstractbox\vbox\bgroup
+  \parindent0pt\hsize\textwidth\abstractfont\ignorespaces}
+\def\endabstract{\egroup}
+
 \begin{document}
-\receiveddate{XX Month, XXXX}
-\reviseddate{XX Month, XXXX}
-\accepteddate{XX Month, XXXX}
-\publisheddate{XX Month, XXXX}
-\currentdate{XX Month, XXXX}
-\doiinfo{XXXX.2022.1234567}
+\receiveddate{1 March, 2026}
+\reviseddate{1 March, 2026}
+\accepteddate{1 March, 2026}
+\publisheddate{1 March, 2026}
+\currentdate{1 March, 2026}
+\doiinfo{}
 
-\markboth{}{Author {et al.}}
+\markboth{}{Quintero Rubiano}
 
-\title{}
+\title{LUCID: Un Framework de IA Generativa para la Gamificación Matemática Adaptativa}
 
-\author{First A. Author\authorrefmark{1}, Fellow, IEEE, Second B. Author\authorrefmark{2},\\ and Third C. Author Jr.\authorrefmark{3}, Member, IEEE}
-\affil{National Institute of Standards and Technology, Boulder, CO 80305 USA}
-\affil{Department of Physics, Colorado State University, Fort Collins, CO 80523 USA}
-\affil{Electrical Engineering Department, University of Colorado, Boulder, CO 80309 USA}
-\corresp{Corresponding author: First A. Author (email: author@ boulder.nist.gov).}
-\authornote{This paragraph of the first footnote will contain support information, including sponsor and financial support acknowledgment. For example, ``This work was supported in part by the U.S. Department of Commerce under Grant 123456.''}
+\author{Juan Carlos Quintero Rubiano}
+\affil{Estudiante de Ingenier\'ia de Sistemas, Universidad Distrital -- C\'odigo de estudiante 20232020172}
+\corresp{Corresponding author: Juan Carlos Quintero Rubiano (email: jcquinteror@udistrital.edu.co).}
 
 
 \begin{abstract}
-These instructions give you guidelines for preparing papers for IEEE Transactions 
-and Journals. Otherwise, use this document as an instruction set. The electronic file of your paper will be formatted further at IEEE. Paper titles should be written in uppercase and lowercase letters, not all uppercase. Avoid writing long formulas with subscripts in the title; short formulas that identify the elements are fine (e.g., ``Nd--Fe--B''). Do not write ``(Invited)'' in the title. Full names of authors are preferred in the author field, but are not required. Put a space between authors' initials. The abstract must be a concise yet comprehensive reflection of what is in your article. In particular, the abstract must be self-contained, without abbreviations, footnotes, or references. It should be a microcosm of the full article. The abstract must be between 150--250 words. Be sure that you adhere to these limits; otherwise, you will need to edit your abstract accordingly. The abstract must be written as one paragraph, and should not contain displayed mathematical equations or tabular material. The abstract should include three or four different keywords or phrases, as this will help readers to find it. It is important to avoid over-repetition of such phrases as this can result in a page being rejected by search engines. Ensure that your abstract reads well and is grammatically correct.
+{\abstractheadfont\bfseries\textcolor{tmlcncolor}{RESUMEN}}\hspace*{3pt}%
+LUCID es un framework de software basado en Inteligencia Artificial Generativa dise\~nado para
+abordar una problem\'atica profunda en la educaci\'on de j\'ovenes: la tendencia de los
+adolescentes a memorizar f\'ormulas y procedimientos matem\'aticos sin comprender los conceptos
+que los sustentan, lo que genera un aprendizaje fr\'agil, ansiedad ante la evaluaci\'on y una
+relaci\'on negativa con la matem\'atica desde etapas tempranas de su formaci\'on.
+En lugar de presentar la aritm\'etica y la l\'ogica como reglas abstractas a reproducir
+mec\'anicamente, LUCID transforma cada concepto en un desaf\'io narrativo dentro de un mundo
+de rol generado proceduralmente, donde el estudiante debe razonar y construir la soluci\'on
+para hacer avanzar la historia, no simplemente aplicar una f\'ormula memorizada.
+El sistema emplea Modelos de Lenguaje de Gran Escala~(LLMs) como motor narrativo que act\'ua
+como un ``Dungeon Master'' digital, adaptando los retos al nivel conceptual real de cada
+usuario con base en su historial de aciertos y errores, con el objetivo de cerrar la brecha
+entre el procedimiento mec\'anico y la comprensi\'on genuina.
+Un microservicio de validaci\'on simb\'olica implementado con Python/SymPy verifica la
+correcci\'on matem\'atica de las respuestas y previene alucinaciones de la IA, garantizando
+que el contenido generado sea pedag\'ogicamente \'integro.
+De esta forma, LUCID propone la Generaci\'on Procedural de Contenido~(PCG) como una herramienta
+escalable para reemplazar la memorizaci\'on pasiva por una comprensi\'on activa y significativa
+de la matem\'atica en j\'ovenes estudiantes.
+
+\smallskip\noindent
+{\abstractheadfont\bfseries\textcolor{tmlcncolor}{T\'ERMINOS DE INDEXADO}}\hspace*{3pt}%
+\textit{adolescentes, aprendizaje adaptativo, aprendizaje basado en juegos, comprensi\'on conceptual,
+educaci\'on matem\'atica, gamificaci\'on, generaci\'on procedural de contenido,
+inteligencia artificial generativa, juegos serios, modelos de lenguaje de gran escala.}
+
+\bigskip\noindent
+{\abstractheadfont\bfseries\textcolor{tmlcncolor}{ABSTRACT}}\hspace*{3pt}%
+LUCID is a generative artificial intelligence framework designed to address a pervasive problem
+in secondary education: the tendency of adolescent students to memorize mathematical formulas
+and procedures without understanding the underlying concepts, resulting in fragile knowledge,
+evaluation anxiety, and a lasting negative relationship with mathematics.
+Rather than presenting arithmetic and logical reasoning as abstract rules to be mechanically
+reproduced, LUCID embeds each concept within a procedurally generated role-playing narrative
+where students must reason through problems to advance the story---replacing passive recall
+with active conceptual construction.
+The system deploys large language models~(LLMs) as a digital Dungeon Master that generates
+contextually coherent mathematical challenges adapted in real time to each learner's conceptual
+profile, inferred from their history of correct and incorrect responses, targeting the gap
+between procedural execution and genuine understanding.
+A symbolic validation microservice built with Python/SymPy acts as a mathematical truth oracle,
+verifying the correctness of user answers and preventing AI hallucinations, thereby ensuring
+the pedagogical integrity of all generated content.
+A procedural adaptability algorithm adjusts both narrative tone and challenge difficulty to
+maintain each student in a state of cognitive flow, progressively replacing formula-dependent
+thinking with deep conceptual reasoning.
+Evaluation objectives include AI response latency benchmarking and student-perception surveys
+measuring the reduction of rote memorization dependency and mathematical anxiety compared to
+traditional instructional methods.
+LUCID represents a convergence of serious game design, generative AI, and constructivist
+pedagogy aimed at transforming how young learners build mathematical understanding from the
+ground up.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Enter key words or phrases in alphabetical order, separated by
-commas. Using the \textit{IEEE Thesaurus} can help you find the best
-standardized keywords to fit your article. Use the \underline{\href{https://www.ieee.org/publications/services/thesaurus.html}{thesaurus
-access request form}} for free access to the \textit{IEEE Thesaurus}.
+adolescents, adaptive learning, conceptual understanding, game-based learning,
+gamification, generative artificial intelligence, large language models,
+mathematical education, procedural content generation, serious games.
 \end{IEEEkeywords}
 
 %\IEEEspecialpapernotice{(Invited Paper)}
