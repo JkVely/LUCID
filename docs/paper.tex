@@ -8,6 +8,8 @@
 \usepackage{hyperref}
 \hypersetup{hidelinks=true}
 \usepackage{algorithm,algorithmic}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,calc,shadows,decorations.pathmorphing}
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \AtBeginDocument{\definecolor{tmlcncolor}{cmyk}{0.93,0.59,0.15,0.02}\definecolor{NavyBlue}{RGB}{0,86,125}}
@@ -15,8 +17,9 @@
 
 
 
-\def\OJlogo{\vspace{-4pt}$<$Society logo(s) and publication title will appear here.$>$}
-\def\seclogo{\vspace{10pt}$<$Society logo(s) and publication title will appear here.$>$}
+\def\OJlogo{\vspace{-17pt}\includegraphics[width=3.5cm]{img/banner.png}}
+\def\seclogo{\vspace{-4pt}\includegraphics[width=3.5cm]{img/banner.png}}
+\jvol{1}
 
 \def\authorrefmark#1{\ensuremath{^{\textbf{#1}}}}
 
@@ -29,11 +32,11 @@
 \def\endabstract{\egroup}
 
 \begin{document}
-\receiveddate{1 March, 2026}
-\reviseddate{1 March, 2026}
-\accepteddate{1 March, 2026}
-\publisheddate{1 March, 2026}
-\currentdate{1 March, 2026}
+\receiveddate{22 March, 2026}
+\reviseddate{22 March, 2026}
+\accepteddate{22 March, 2026}
+\publisheddate{22 March, 2026}
+\currentdate{22 March, 2026}
 \doiinfo{}
 
 \markboth{}{Quintero Rubiano}
@@ -112,7 +115,7 @@ mathematical education, procedural content generation, serious games.
 \maketitle
 
 \section{INTRODUCCIÓN}
-\IEEEPARstart{L}{a} ense\~nanza de las matem\'aticas en la educaci\'on secundaria enfrenta desaf\'ios
+\IEEEPARstart{L}a ense\~nanza de las matem\'aticas en la educaci\'on secundaria enfrenta desaf\'ios
 sist\'emicos relacionados con la desvinculaci\'on cognitiva de los estudiantes. La tendencia a
 priorizar la memorizaci\'on de procedimientos algor\'itmicos sobre la comprensi\'on conceptual
 profunda ha generado un fen\'omeno de aprendizaje superficial, caracterizado por altos \'indices
@@ -220,6 +223,138 @@ estudios previos aceptan este margen de error, LUCID contrarresta esta fragilida
 un or\'aculo de validaci\'on matem\'atica programado en Python (v\'ia SymPy). En este framework de dos capas, 
 la l\'ogica conversacional socr\'atica corre a cargo del LLM, mientras que la verdad simb\'olica irrefutable
 es garantizada por el int\'erprete de Python.
+
+\section{METODOLOG\'IA Y ENFOQUE EXPERIMENTAL}
+El dise\~no experimental de LUCID sigue un enfoque iterativo que integra ciclos de prototipado r\'apido con retroalimentaci\'on pedag\'ogica.
+Si bien CRISP-DM~\cite{zawacki2019systematic} es un est\'andar en ciencia de datos, nuestro contexto educativo demanda adaptaciones.
+Por lo tanto, hemos estructurado el desarrollo en cinco fases iterativas:
+
+\textbf{(1) Entendimiento del Problema:} Validaci\'on de patrones de desempe\~no matem\'atico en estudiantes de educaci\'on media,
+identificando umbrales cognitivos cr\'iticos y m\'etodos de diagn\'ostico de comprensi\'on.
+Esta fase inform\'o el dise\~no de la validaci\'on simb\'olica descrita en la Secci\'on~IV.
+
+\textbf{(2) Selecci\'on y Curaci\'on de Datos:} Compilaci\'on de conjuntos de datos matem\'aticos estructurados por dominio conceptual
+(aritm\'etica, \'algebra, geometr\'ia) y complejidad cognoscitiva, complementados con corpus textuales para el entrenamiento de directivas de prompts.
+
+\textbf{(3) Preparaci\'on Algor\'itmica:} Implementaci\'on de la cadena LLM$\rightarrow$PCG$\rightarrow$Validaci\'on y puesta a punto de par\'ametros
+de temperatura y longitud de salida del LLM para mantener coherencia narrativa sin sacrificar precisin.
+
+\textbf{(4) Modelado e Implementaci\'on:} Construcci\'on del prototipo funcional acoplando el motor narrativo (LLM),
+estrategia de generaci\'on procedural (directivas din\'amicas) e int\'erprete de validaci\'on (Python/SymPy) en una arquitectura
+de microservicios REST, con persistencia en base de datos no relacional para historial de sesiones.
+
+\textbf{(5) Evaluaci\'on y Retroalimentaci\'on:} Pruebas de usabilidad, latencia y precisi\'on matem\'atica; ajustes iterativos
+del algoritmo de adaptabilidad seg\'un datos de interacci\'on en tiempo real y retroalimentaci\'on de usuarios.
+
+Esta metodolog\'ia garantiza que cada iteraci\'on consolide aprendizajes del ciclo anterior, alineando tanto calidad t\'ecnica
+como efectividad pedag\'ogica del sistema.
+
+\section{ARQUITECTURA Y DISE\~NO DEL SISTEMA}
+La arquitectura de LUCID se articula como un flujo secuencial de procesamiento que garantiza coherencia narrativa y veracidad
+matem\'atica. La Figura~\ref{fig:architecture} ilustra la topolog\'ia del sistema en sus componentes esenciales:
+
+
+\begin{figure}[!h]
+\centering
+\resizebox{0.95\columnwidth}{!}{%
+\begin{tikzpicture}[
+  entry_node/.style={rectangle, draw=black!80, fill=green!18, text width=1.1cm, text centered, font=\tiny\bfseries, rounded corners=1.5pt, minimum height=0.55cm},
+  process_node/.style={rectangle, draw=black!80, fill=blue!18, text width=1.0cm, text centered, font=\tiny\bfseries, rounded corners=1.5pt, minimum height=0.55cm},
+  decision_node/.style={diamond, draw=black!80, fill=yellow!18, inner sep=2pt, font=\tiny\bfseries},
+  output_node/.style={rectangle, draw=black!80, fill=orange!18, text width=1.1cm, text centered, font=\tiny\bfseries, rounded corners=1.5pt, minimum height=0.55cm},
+  arrow/.style={->, line width=1pt, color=black!70},
+  feedback_arrow/.style={->, line width=1pt, color=red!70, densely dashed},
+]
+
+% ENTRADAS (Columna 1)
+\node [entry_node] at (0, 3.2) (in1) {Perfil del\\estudiante};
+\node [entry_node] at (0, 2.2) (in2) {Historial de\\respuestas};
+\node [entry_node] at (0, 1.2) (in3) {Tipos de\\pregunta};
+\node [entry_node] at (0, 0.2) (in4) {Parámetros\\pedagógicos};
+
+% ANÁLISIS (Columna 2A)
+\node [process_node] at (2.0, 2.7) (analisis) {Análisis\\de Perfil};
+
+% GENERACIÓN DE PROMPT (Columna 2B)
+\node [process_node] at (2.0, 1.2) (prompt) {Generación\\de Prompt};
+
+% PROCESAMIENTO CENTRAL (Columna 3-4)
+\node [process_node] at (3.5, 1.2) (llm) {LLM (DM)};
+\node [process_node] at (5.0, 1.2) (pcg) {PCG};
+\node [process_node] at (6.5, 1.2) (sympy) {SymPy};
+\node [decision_node] at (6.5, -0.3) (check) {OK?};
+
+% ADAPTACIÓN (Columna 2 - abajo)
+\node [process_node] at (2.0, -1.5) (adapt) {Algoritmo\\Adaptativo};
+
+% SALIDAS (Columna 5)
+\node [output_node] at (8.5, 2.7) (out1) {Reto\\verificado};
+\node [output_node] at (8.5, 1.7) (out2) {Feedback\\paso a paso};
+\node [output_node] at (8.5, 0.7) (out3) {Estadísticas};
+\node [output_node] at (8.5, -0.3) (out4) {Recomendaciones};
+
+% ============ CONEXIONES ENTRADAS → PROCESOS ============
+% Perfil, Historial, Parámetros → Análisis
+\draw [arrow] (in1.east) -- (1.0, 3.2) -- (1.0, 2.7) -- (analisis.west);
+\draw [arrow] (in2.east) -- (1.0, 2.2) -- (1.0, 2.7) -- (analisis.west);
+\draw [arrow] (in4.east) -- (1.0, 0.2) -- (1.0, 2.7) -- (analisis.west);
+
+% Tipos de pregunta → Prompt
+\draw [arrow] (in3.east) -- (1.0, 1.2) -- (prompt.west);
+
+% Análisis → Prompt
+\draw [arrow] (analisis.south) -- (analisis.south |- prompt.north) -- (prompt.north);
+
+% ============ CONEXIONES PROCESOS CENTRALES ============
+% Prompt → LLM
+\draw [arrow] (prompt.east) -- (llm.west);
+% LLM → PCG
+\draw [arrow] (llm.east) -- (pcg.west);
+% PCG → SymPy
+\draw [arrow] (pcg.east) -- (sympy.west);
+% SymPy → Decision
+\draw [arrow] (sympy.south) -- (sympy.south |- check.north) -- (check.north);
+
+% ============ BUCLE DE RETROALIMENTACIÓN (NO) ============
+% Check → Adapt
+\draw [feedback_arrow] (check.south) -- ++(0,-0.4) -| (adapt.east);
+% Adapt → Prompt (retroalimentación ortogonal)
+\draw [feedback_arrow] (adapt.north) -- ++(0,0.4) -| (prompt.south);
+
+% ============ CONEXIONES A SALIDAS (SÍ) ============
+% Check → Reto verificado
+\draw [arrow] (check.east) -- (7.3, -0.3) -- (7.3, 2.7) -- (out1.west);
+
+% Check → Feedback paso a paso
+\draw [arrow] (check.east) -- (7.3, -0.3) -- (7.3, 1.7) -- (out2.west);
+
+% Análisis → Estadísticas (información de contexto)
+\draw [arrow] (analisis.east) -- (7.3, 2.7) -- (7.3, 0.7) -- (out3.west);
+
+% Check → Recomendaciones
+\draw [arrow] (check.east) -- (7.3, -0.3) -- (out4.west);
+
+\end{tikzpicture}%
+}
+\caption{Diagrama de caja gris de LUCID: arquitectura de sistemas con flujo de información ortogonal. Entradas individuales (verde) fluyen hacia procesos específicos (azul), pasando por validación SymPy con decisión (amarillo). El bucle de retroalimentación rojo (punteado) maneja fallos de validación. Salidas diferenciadas (naranja) se generan según el estado del sistema.}
+\label{fig:architecture}
+\end{figure}
+  
+El sistema opera bajo el siguiente flujo secuencial de procesamiento:
+
+\paragraph{Paso 1 - Análisis de Perfil:} Se recuperan e integran el perfil del estudiante (dominio actual, tasa de éxito), el historial de respuestas anteriores y los parámetros pedagógicos configurados. Este análisis multidimensional construye el modelo conceptual actual del aprendiz, incluyendo brechas de conocimiento y patrones de error.
+
+\paragraph{Paso 2 - Generación de Directiva Contextualizada:} El análisis de perfil se combina con los tipos de pregunta seleccionados para generar un prompt dinámico que instruye al LLM a asumir el rol de ``Dungeon Master'' pedagógico. Este prompt inyecta metadatos de contexto (nivel conceptual, restricciones narrativas, tipos de operaciones esperadas) en una plantilla reutilizable que asegura coherencia entre iteraciones.
+
+\paragraph{Paso 3 - Síntesis LLM (Dungeon Master):} El modelo de lenguaje generativo sintetiza un reto narrativo cohesivo que integra tanto el texto narrativo como la expresión matemática del problema. El LLM actúa como motor creativo, garantizando que el desafío sea pedagógicamente relevante y narrativamente inmersivo.
+
+\paragraph{Paso 4 - Generación Procedural de Contenido (PCG):} La salida del LLM se parsea estructuradamente para extraer el núcleo matemático (operaciones, restricciones, soluciones posibles) y se inserta en la mecánica interactiva del entorno de juego, transformando la narrativa en un reto jugable.
+
+\paragraph{Paso 5 - Validación Simbólica (SymPy):} Un microservicio Python/SymPy ejecuta validación determinista, verificando que la matemática sea correcta, que no haya alucinaciones en la expresión, y que el reto sea resoluble bajo las restricciones pedagógicas especificadas.
+
+\paragraph{Paso 6 - Decisión Adaptativa y Cierre:} Si la validación es exitosa (OK = Sí), el reto verificado se entrega al estudiante junto con el feedback paso a paso, estadísticas de contexto y recomendaciones personalizadas. Si falla (OK = No), el Algoritmo Adaptativo reajusta parámetros pedagógicos (reduce complejidad, añade analogías, modifica restricciones) y reinicia desde Paso 2, garantizando convergencia hacia retos válidos.
+
+Esta arquitectura de dos capas con validación determinística separa claramente la responsabilidad de coherencia narrativa (LLM) del ``oráculo de verdad'' matemática (SymPy), garantizando que cada estudiante solo enfrenta desafíos que son simultáneamente pedagógicamente íntegros, narrativamente significativos y matemáticamente correctos.
 
 \bibliographystyle{IEEEtran}
 \bibliography{ref}
