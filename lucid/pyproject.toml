@@ -1,0 +1,19 @@
+[project]
+name = "lucid"
+version = "0.2.0"
+description = "LUCID: Large-language-model Unified Curriculum Intelligent Designer – Framework de IA Generativa para Gamificación Matemática Adaptativa"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+    { name = "Juan Carlos Quintero Rubiano", email = "jcquinteror@udistrital.edu.co" },
+]
+
+dependencies = [
+    "customtkinter>=5.2.0",
+    "ollama>=0.4.0",
+    "sympy>=1.13.0",
+    "pillow>=10.0.0",
+    "google-generativeai>=0.8.0",
+    "python-dotenv>=1.0.0",
+]

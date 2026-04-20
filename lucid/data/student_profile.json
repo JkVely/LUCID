@@ -1,0 +1,26 @@
+{
+  "name": "Jk",
+  "level": 5,
+  "domain": "Aritmética",
+  "total_correct": 0,
+  "total_incorrect": 0,
+  "current_streak": 0,
+  "best_streak": 0,
+  "consecutive_errors": 0,
+  "challenges_played": 0,
+  "domain_scores": {
+    "Aritmética": {
+      "correct": 0,
+      "incorrect": 0
+    },
+    "Álgebra": {
+      "correct": 0,
+      "incorrect": 0
+    },
+    "Geometría": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  "history": []
+}
