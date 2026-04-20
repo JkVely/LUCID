@@ -21,3 +21,11 @@
 *.auxlock
 *.fls
 build/
+
+# python
+__pycache__/
+*.pyc
+.env
+.venv
+.venv/
+

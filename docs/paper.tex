@@ -165,7 +165,8 @@ y un microservicio de validaci\'on simb\'olica (Python/SymPy) para garantizar la
 matem\'atica. El resto del documento se estructura de la siguiente manera: la Secci\'on~II
 presenta los trabajos relacionados y su contraste con este proyecto; la Secci\'on~III detalla
 la arquitectura del sistema; la Secci\'on~IV describe el algoritmo de adaptabilidad;
-la Secci\'on~V expone la metodolog\'ia de evaluaci\'on; y la Secci\'on~VI agrupa las
+la Secci\'on~V detalla el desarrollo e implementaci\'on del prototipo funcional;
+la Secci\'on~VI expone la metodolog\'ia de evaluaci\'on; y la Secci\'on~VII agrupa las
 conclusiones.
 
 \section{TRABAJOS RELACIONADOS}
@@ -354,7 +355,80 @@ El sistema opera bajo el siguiente flujo secuencial de procesamiento:
 
 \paragraph{Paso 6 - Decisión Adaptativa y Cierre:} Si la validación es exitosa (OK = Sí), el reto verificado se entrega al estudiante junto con el feedback paso a paso, estadísticas de contexto y recomendaciones personalizadas. Si falla (OK = No), el Algoritmo Adaptativo reajusta parámetros pedagógicos (reduce complejidad, añade analogías, modifica restricciones) y reinicia desde Paso 2, garantizando convergencia hacia retos válidos.
 
-Esta arquitectura de dos capas con validación determinística separa claramente la responsabilidad de coherencia narrativa (LLM) del ``oráculo de verdad'' matemática (SymPy), garantizando que cada estudiante solo enfrenta desafíos que son simultáneamente pedagógicamente íntegros, narrativamente significativos y matemáticamente correctos.
+Esta arquitectura de dos capas con validaci\'on determin\'istica separa claramente la responsabilidad de coherencia narrativa (LLM) del ``or\'aculo de verdad'' matem\'atica (SymPy), garantizando que cada estudiante solo enfrenta desaf\'ios que son simult\'aneamente pedag\'ogicamente \'integros, narrativamente significativos y matem\'aticamente correctos.
+
+\section{DESARROLLO E IMPLEMENTACI\'ON}
+
+El prototipo funcional de LUCID fue implementado como una aplicaci\'on de escritorio en Python~3.11+ siguiendo una arquitectura modular que separa responsabilidades en tres componentes principales: el motor de juego (\texttt{engine/}), la interfaz de usuario (\texttt{ui/}) y la capa de datos (\texttt{data/}). A continuaci\'on se detalla cada aspecto del proceso de desarrollo.
+
+\subsection{Stack Tecnol\'ogico}
+
+La selecci\'on de tecnolog\'ias se gui\'o por dos criterios: (1)~capacidad de prototipado r\'apido con ecosistema cient\'ifico maduro, y (2)~interoperabilidad con modelos de lenguaje tanto locales como en la nube.
+
+\begin{itemize}
+  \item \textbf{Lenguaje:} Python~3.11+, por su ecosistema de c\'omputo simb\'olico (SymPy) y bibliotecas de IA generativa.
+  \item \textbf{Interfaz gr\'afica:} CustomTkinter, un framework moderno que extiende Tkinter con widgets de apariencia contempor\'anea y soporte nativo para modo oscuro.
+  \item \textbf{LLM local:} Ollama como servidor de inferencia local, ejecutando el modelo Gemma~4 para generaci\'on narrativa sin dependencia de conectividad.
+  \item \textbf{LLM en la nube:} API de Google Gemini (modelo Gemini~3~Flash) como mecanismo de respaldo autom\'atico cuando Ollama no est\'a disponible, asegurando disponibilidad continua.
+  \item \textbf{Validaci\'on simb\'olica:} SymPy como or\'aculo determinista para verificaci\'on de expresiones matem\'aticas y respuestas de usuarios.
+  \item \textbf{Gesti\'on de dependencias:} \texttt{uv} (gestor de paquetes ultra-r\'apido basado en Rust) con archivo \texttt{pyproject.toml} conforme a PEP~621.
+  \item \textbf{Persistencia:} Perfil de estudiante en formato JSON para almacenamiento ligero de historial, estad\'isticas y progreso adaptativo.
+\end{itemize}
+
+\subsection{Arquitectura de M\'odulos}
+
+El c\'odigo fuente se organiza en tres paquetes con responsabilidades diferenciadas:
+
+\paragraph{Motor de Juego (\texttt{engine/}):} Contiene cinco m\'odulos:
+(i)~\texttt{orchestrator.py} coordina el ciclo de vida completo de cada clase, gestionando la cadena perfil$\rightarrow$prompt$\rightarrow$LLM$\rightarrow$validaci\'on$\rightarrow$feedback;
+(ii)~\texttt{llm\_client.py} implementa el cliente LLM con cadena de fallback Ollama$\rightarrow$Gemini$\rightarrow$Demo, incluyendo la conversi\'on autom\'atica de formatos de mensajes entre APIs;
+(iii)~\texttt{prompts.py} define los templates de system prompt parametrizables por tem\'atica narrativa y tema matem\'atico, con directivas expl\'icitas para el patr\'on socr\'atico;
+(iv)~\texttt{validator.py} encapsula el or\'aculo SymPy para extracci\'on, validaci\'on y comparaci\'on de expresiones matem\'aticas;
+(v)~\texttt{profile.py} modela el perfil del estudiante como dataclass con algoritmo adaptativo integrado y persistencia JSON.
+
+\paragraph{Interfaz de Usuario (\texttt{ui/}):} Implementa una interfaz de chat RPG con tres componentes: (i)~\texttt{app.py} como ventana ra\'iz que conecta callbacks e incluye un di\'alogo modal de configuraci\'on de clase; (ii)~\texttt{chat\_view.py} como panel de conversaci\'on con burbujas diferenciadas por rol (narrador, usuario, sistema), indicador de escritura animado y controles de interacci\'on; (iii)~\texttt{sidebar.py} como panel lateral con perfil del estudiante, estad\'isticas en tiempo real, selectores de dominio y dificultad, y barras de progreso por dominio.
+
+\paragraph{Capa de Datos (\texttt{data/}):} Almacena el perfil del estudiante en un archivo JSON que persiste entre sesiones, registrando historial de respuestas, puntuaciones por dominio y par\'ametros del algoritmo adaptativo.
+
+\subsection{Flujo de una Clase}
+
+El flujo operativo de una sesi\'on de aprendizaje sigue estos pasos:
+
+\textbf{(1) Configuraci\'on de Clase:} El estudiante selecciona una \textit{tem\'atica narrativa} (Fantas\'ia Medieval, Ciencia Ficci\'on, Piratas, Exploraci\'on Espacial, Steampunk o Mundo Submarino) y un \textit{tema matem\'atico espec\'ifico} (e.g., ``divisi\'on de decimales'', ``ecuaciones de primer grado''). Esta elecci\'on parametriza el system prompt del LLM, adaptando personajes, ambientaci\'on y vocabulario narrativo.
+
+\textbf{(2) Generaci\'on del Primer Desaf\'io:} El orquestador construye un prompt contextualizado inyectando el perfil del estudiante (nivel, racha, tasa de \'exito, errores recientes), la tem\'atica y el tema. El LLM genera una micro-narrativa inmersiva con un problema matem\'atico integrado, finalizando con un tag \texttt{[MATH: expresi\'on = resultado]} que es extra\'ido y validado simb\'olicamente por SymPy.
+
+\textbf{(3) Respuesta Correcta -- Continuaci\'on Narrativa:} Cuando el estudiante responde correctamente (verificado por SymPy), el LLM genera simult\'aneamente: (a)~una celebraci\'on narrativa breve, (b)~una explicaci\'on del concepto subyacente, y (c)~la continuaci\'on de la historia con un nuevo desaf\'io integrado. Si el LLM no incluye la continuaci\'on, el sistema la genera autom\'aticamente tras un breve retardo. Este mecanismo mantiene el flujo narrativo y la progresi\'on continua.
+
+\textbf{(4) Respuesta Incorrecta -- Gu\'ia Socr\'atica:} Ante un error, el sistema \textit{nunca} revela la respuesta. En su lugar, el LLM genera una gu\'ia estructurada en tres pasos: identificar datos disponibles, determinar la operaci\'on necesaria y ejecutar el c\'alculo paso a paso. Preguntas socr\'aticas narrativas complementan la gu\'ia, y el desaf\'io permanece activo para reintento.
+
+\subsection{Algoritmo Adaptativo}
+
+El sistema implementa un algoritmo adaptativo basado en dos umbrales configurables:
+
+\begin{itemize}
+  \item \textbf{Ascenso de nivel:} Tras $k=3$ respuestas correctas consecutivas (racha), el nivel de dificultad incrementa en 1 (m\'aximo 5). La racha se mantiene visible para refuerzo positivo.
+  \item \textbf{Descenso de nivel:} Tras $m=2$ errores consecutivos, el nivel decrementa en 1 (m\'inimo 1) y el contador de errores se reinicia.
+\end{itemize}
+
+Este mecanismo busca mantener al estudiante en la zona de desarrollo pr\'oximo~(ZDP) de Vygotsky, donde los desaf\'ios son suficientemente retadores para promover aprendizaje sin generar frustraci\'on.
+
+\subsection{Integraci\'on Dual de LLMs}
+
+Una contribuci\'on t\'ecnica relevante de la implementaci\'on es la cadena de fallback para modelos de lenguaje, que garantiza disponibilidad continua del servicio:
+
+\begin{enumerate}
+  \item \textbf{Ollama (local):} Prioridad m\'axima. Ejecuta Gemma~4 localmente, eliminando latencia de red y costos de API. Requiere que el servidor Ollama est\'e activo con el modelo descargado.
+  \item \textbf{Google Gemini (nube):} Primera alternativa. Utiliza Gemini~3~Flash v\'ia API REST. El cliente implementa conversi\'on autom\'atica del formato de mensajes (OpenAI/Ollama $\rightarrow$ Gemini) y manejo de alternancia de turnos.
+  \item \textbf{Modo Demo (offline):} \textit{Fallback} final. Provee un conjunto de desaf\'ios pre-escritos y respuestas gen\'ericas para funcionamiento sin conectividad ni modelo local.
+\end{enumerate}
+
+La detecci\'on del backend disponible se realiza autom\'aticamente al inicio de la aplicaci\'on, y el usuario puede forzar un reintento de conexi\'on desde la interfaz.
+
+\subsection{Patr\'on Socr\'atico Implementado}
+
+El system prompt del LLM codifica expl\'icitamente el m\'etodo socr\'atico mediante directivas algor\'itmicas que condicionan el comportamiento del modelo seg\'un el resultado de la validaci\'on SymPy. Ante errores, se genera una cadena de preguntas progresivas que descomponen el problema en sub-objetivos cognitivos, sin revelar la soluci\'on. Ante aciertos, se refuerza la comprensi\'on con una breve explicaci\'on conceptual antes de continuar con la narrativa. Este enfoque es consistente con los hallazgos de Adewumi et al.~\cite{adewumi2025findings} sobre la efectividad de la instrucci\'on socr\'atica mediada por LLMs.
+
 
 \bibliographystyle{IEEEtran}
 \bibliography{ref}
